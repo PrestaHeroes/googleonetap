@@ -1,32 +1,19 @@
-# Checkout Pro 2020
+# Google auto sign in
 Base 1.7 module for PH advanced checkout module 1.7 only
-Advanced Visitor Experience Checkout
-We took our many years of experience and created a simple and elegant checkout process using inspiration from major ecommerce companies to create what we think is best checkout now available for PrestaShop.  
 
-Benefits for Merchants
-
-•	Master your visitor assurance at most critical path with a best in class checkout
-•	Keep them in check, module suppresses header at checkout and only displays shop logo to exist requires click of shop logo but visitor is prompted are they sure they want to leave checkout.
-•	No module configuration: follows all native PrestaShop configurations that exists in your shop today.
-•	Smooth visitor account creation (guest) | sign in page
+Sign up new users with just one tap, without interrupting them with a sign-up screen. 
+Users get a secure, token-based, passwordless account on your site, protected by their Google Account.
+Sign in users automatically when they return to your site on any device or browser, even after their session expires.
+Benefits for Merchants:
 
 
-Features
+Features:
 
-•	Best in class visitor checkout experience.
-•	Once click install with sandbox mode so you can test by IP before enabling to your customers.
-•	Developed using PrestaShop best practices.
-•	Uses your existing checkout out configuration, no additional module configuration required.
 
 Installation:
 
 Recommended:  
-1.	Upload and install zip using your PrestaShop module manager.
-2.	Select configure
-3.	set in test mode
-4.	add your IP
-5.	test
-6.	when ready take out of test mode
+
 
 Other (for advanced users)
 Upload unzipped files via ftp or hosting control panel to your PrestaShop modules folder.
@@ -34,7 +21,3 @@ Upload unzipped files via ftp or hosting control panel to your PrestaShop module
 1.	Find module in PrestaShop module manager
 2.	Install module
 3.	Select configure
-4.	set in test mode
-5.	add your IP
-6.	test
-7.	when ready take out of test mode
