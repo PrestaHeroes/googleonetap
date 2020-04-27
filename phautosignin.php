@@ -39,7 +39,7 @@ class Phautosignin extends Module implements WidgetInterface
 
         parent::__construct();
 
-        $this->displayName = $this->l('Google Auto Sign In');
+        $this->displayName = $this->l('Google One Tap Sign In');
         $this->description = $this->l('Sign in automatically visitors when they visit website');
 
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall this module ?');
@@ -65,7 +65,7 @@ class Phautosignin extends Module implements WidgetInterface
         return parent::install() &&
             $this->registerHook('header') &&
             $this->registerHook('backOfficeHeader') &&
-            $this->registerHook('displayFooter') &&
+            $this->registerHook('displayBeforeBodyClosingTag') &&
             $this->registerHook('actionFrontControllerSetVariables') &&
             $this->registerHook('actionCustomerLogoutAfter');
     }
@@ -266,7 +266,7 @@ class Phautosignin extends Module implements WidgetInterface
                     array(
                         'type' => 'select',
                         'tab' => 'pageSettings',
-                        'class' => 'chosen fixed-width-xl',
+                        'class' => 'chosen',
                         'label' => $this->l('Page into:'),
                         'name' => 'PHAUTOSIGNIN_PAGE_LIST[]',
                         'hint' => $this->l(
@@ -380,7 +380,7 @@ class Phautosignin extends Module implements WidgetInterface
         return array();
     }
 
-    public function hookDisplayFooter()
+    public function hookDisplayBeforeBodyClosingTag()
     {
         $isGoogleAutoSignInAvailable = false;
         $activatedPages = explode(';', Configuration::get('PHAUTOSIGNIN_PAGE_LIST'));
