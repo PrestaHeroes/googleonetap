@@ -46,11 +46,11 @@ class PhautosigninGoogleautosigninModuleFrontController extends ModuleFrontContr
                 $payload = $client->verifyIdToken($credential);
 
                 if ($payload) {
-                    $useid = $payload['sub'];
+                    //$useid = $payload['sub']; not used in rest of code
                     $firstName = $payload['given_name'];
                     $lastName = $payload['family_name'];
                     $email = $payload['email'];
-                    $emailVerified = $payload['email_verified'];
+                    //$emailVerified = $payload['email_verified'];not used in rest of code
 
                     $googleUserData[] = $payload;
 

@@ -11,3 +11,14 @@
  *  @copyright 2020 Heroic Business Solutions LLC
  *  @license   LICENSE.txt
  */
+
+$(document).ready(function() {
+    // Add class to sign out links that prevenrt autosign in after
+    if (!$('a[href*="mylogout"]').hasClass('g_id_signout')) {
+    	$('a[href*="mylogout"]').addClass('g_id_signout');
+    }
+
+    $(document).on('click', 'a[href*="mylogout"]', function() {
+        google.accounts.id.disableAutoSelect();
+    });
+});

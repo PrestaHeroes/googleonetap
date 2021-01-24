@@ -17,9 +17,19 @@
              data-client_id="{$clientId}"
              data-auto_select="{$phAutoSigninSilently}"
              data-callback="handleCredentialResponse"
-             data-cancel_on_tap_outside="true"
+             data-cancel_on_tap_outside="{$cancelOnTapOutside}"
              data-prompt_parent_id="g_id_onload"
-             style="position: fixed; bottom: 5px; right: 2%; z-index: 1001;"
+             style="position: fixed;  z-index: 1001;
+             {if $position eq 4}
+               bottom: 5px; left: 5px;
+            {elseif $position eq 3}
+               top: 5px; left: 5px;
+            {elseif $position eq 2}
+               top: 5px; right: 5px;
+            {else}
+               bottom: 5px; right: 5px;
+            {/if}
+             "
              data-context="signin"
              data-skip_prompt_cookie="SID">
         </div>

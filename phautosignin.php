@@ -28,7 +28,7 @@ class Phautosignin extends Module implements WidgetInterface
     {
         $this->name = 'phautosignin';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
+        $this->version = '1.0.2';
         $this->author = 'Prestaheroes';
         $this->need_instance = 0;
 
@@ -59,6 +59,8 @@ class Phautosignin extends Module implements WidgetInterface
         Configuration::updateValue('PHAUTOSIGNIN_AUTOSIGNINSILENTLY', false);
         Configuration::updateValue('PHAUTOSIGNIN_PAGE_LIST', 'cart');
         Configuration::updateValue('PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN', true);
+        Configuration::updateValue('PHAUTOSIGNIN_CANCELONTAPOUTSIDE', true);
+        Configuration::updateValue('PHAUTOSIGNIN_POSITION', 1);
 
         include(dirname(__FILE__).'/sql/install.php');
 
@@ -67,6 +69,7 @@ class Phautosignin extends Module implements WidgetInterface
             $this->registerHook('backOfficeHeader') &&
             $this->registerHook('displayBeforeBodyClosingTag') &&
             $this->registerHook('actionFrontControllerSetVariables') &&
+            $this->registerHook('actionFrontControllerSetMedia') &&
             $this->registerHook('actionCustomerLogoutAfter');
     }
 
@@ -78,6 +81,8 @@ class Phautosignin extends Module implements WidgetInterface
         Configuration::deleteByName('PHAUTOSIGNIN_AUTOSIGNINSILENTLY');
         Configuration::deleteByName('PHAUTOSIGNIN_PAGE_LIST');
         Configuration::deleteByName('PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN');
+        Configuration::deleteByName('PHAUTOSIGNIN_CANCELONTAPOUTSIDE');
+        Configuration::deleteByName('PHAUTOSIGNIN_POSITION');
 
         include(dirname(__FILE__).'/sql/uninstall.php');
 
@@ -156,7 +161,26 @@ class Phautosignin extends Module implements WidgetInterface
         $pages = array(
             array(
                 'id' => 'allpages',
-                'name' => 'Activate In All pages'
+                'name' => 'Activate In All pages',
+                'value' => 'all'
+            ),
+        );
+        $idposition = array(
+            array(
+                'idposition' => 1,
+                'name' => $this->l('Bottom right')
+            ),
+            array(
+                'idposition' => 2,
+                'name' => $this->l('Top right')
+            ),
+            array(
+                'idposition' => 3,
+                'name' => $this->l('Top left')
+            ),
+            array(
+                'idposition' => 4,
+                'name' => $this->l('Bottom left')
             ),
         );
 
@@ -166,7 +190,8 @@ class Phautosignin extends Module implements WidgetInterface
         foreach ($controllers as $key => $value) {
             $pages[] = array(
                 'id' => $key,
-                'name' => $key
+                'name' => $key,
+                'value' => $value
             );
         }
 
@@ -208,7 +233,7 @@ class Phautosignin extends Module implements WidgetInterface
                         'label' => $this->l('Client ID key'),
                         'name' => 'PHAUTOSIGNIN_CLIENTID',
                         'is_bool' => true,
-                        'hint' => '',
+                        'hint' => $this->l('Web application-type client ID from Google Console'),
                         'desc' => '',
                     ),
                     array(
@@ -216,7 +241,7 @@ class Phautosignin extends Module implements WidgetInterface
                         'tab' => 'configuration',
                         'label' => $this->l('Client Secret key'),
                         'name' => 'PHAUTOSIGNIN_CLIENTSECRET',
-                        'hint' => '',
+                        'hint' => $this->l('Web application-type client secret key from Google Console'),
                     ),
                      array(
                         'type' => 'switch',
@@ -227,7 +252,8 @@ class Phautosignin extends Module implements WidgetInterface
                         'desc' => '',
                          'hint' => $this->l(
                              'When enabled visitor will be sign in automatically.
-                              When disabled a popup will be display and customer will be ask to choose an account to use for sign in'
+                              When disabled a popup will be display and customer 
+                              will be ask to choose an account to use for sign in.'
                          ),
                         'values' => array(
                             array(
@@ -249,7 +275,7 @@ class Phautosignin extends Module implements WidgetInterface
                         'name' => 'PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN',
                         'is_bool' => true,
                         'desc' => '',
-                         'hint' => $this->l('Reload the current page after the user is logged'),
+                        'hint' => $this->l('Reload the current page after the user is logged'),
                         'values' => array(
                             array(
                                 'id' => 'active_on',
@@ -262,6 +288,41 @@ class Phautosignin extends Module implements WidgetInterface
                                 'label' => $this->l('Disabled')
                             )
                         ),
+                    ),
+                    array(
+                        'type' => 'switch',
+                        'tab' => 'configuration',
+                        'label' => $this->l('Cancel on tap outside'),
+                        'name' => 'PHAUTOSIGNIN_CANCELONTAPOUTSIDE',
+                        'is_bool' => true,
+                        'desc' => '',
+                        'hint' => $this->l('Cancel or not One Tap request if the user clicks outside of the prompt'),
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => true,
+                                'label' => $this->l('Enabled')
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => false,
+                                'label' => $this->l('Disabled')
+                            )
+                        ),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'tab' => 'configuration',
+                        'label' => $this->l('Position:'),
+                        'name' => 'PHAUTOSIGNIN_POSITION',
+                        'hint' => $this->l(
+                            'Choose one of 4 positions of sign in prompt.'
+                        ),
+                        'options' => array(
+                        'query' => $idposition,
+                        'id' => 'idposition',
+                        'name' => 'name'
+                        )
                     ),
                     array(
                         'type' => 'select',
@@ -310,7 +371,9 @@ class Phautosignin extends Module implements WidgetInterface
             'PHAUTOSIGNIN_CLIENTSECRET' => Configuration::get('PHAUTOSIGNIN_CLIENTSECRET', true),
             'PHAUTOSIGNIN_AUTOSIGNINSILENTLY' => Configuration::get('PHAUTOSIGNIN_AUTOSIGNINSILENTLY', true),
             'PHAUTOSIGNIN_PAGE_LIST[]' => explode(';', Configuration::get('PHAUTOSIGNIN_PAGE_LIST')),
-            'PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN' => Configuration::get('PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN', true)
+            'PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN' => Configuration::get('PHAUTOSIGNIN_RELOADPAGEAFTERLOGIN', true),
+            'PHAUTOSIGNIN_CANCELONTAPOUTSIDE' => Configuration::get('PHAUTOSIGNIN_CANCELONTAPOUTSIDE', true),
+            'PHAUTOSIGNIN_POSITION' => (int) Configuration::get('PHAUTOSIGNIN_POSITION')
         );
     }
 
@@ -350,23 +413,29 @@ class Phautosignin extends Module implements WidgetInterface
     /**
      * Add the CSS & JavaScript files you want to be added on the FO.
      */
-    public function hookHeader()
+    public function hookActionFrontControllerSetMedia()
     {
         // It the module is activated
-        //if ((bool)Configuration::get('PHAUTOSIGNIN_ACTIVATE')) {
-
-//            $this->context->controller->addJS($this->_path . '/views/js/front.js');
-//            $this->context->controller->addCSS($this->_path . '/views/css/front.css');
-
-//            Media::addJsDef(array(
-//                'ph_autosignin_ajax_url' => $this->context->link->getModuleLink($this->name, 'autosignin'),
-//            ));
-        //}
-    }
-
-    public function hookActionFrontControllerSetVariables()
-    {
-        return array();
+        if ((bool)Configuration::get('PHAUTOSIGNIN_AUTOSIGNINSILENTLY') && !Context::getContext()->cookie->isLogged()) {
+//        if ((bool)Configuration::get('PHAUTOSIGNIN_AUTOSIGNINSILENTLY') && !$this->context->customer->isLogged()) {
+            $this->context->controller->registerJavascript(
+                'phautosignin-gaccount',
+                'https://accounts.google.com/gsi/client',
+                [
+                    'server' => 'remote',
+                    'position' => 'bottom',
+                    'priority' => 20,
+                ]
+            );
+            $this->context->controller->registerJavascript(
+                'phautosignin-javascript',
+                $this->_path.'views/js/front.js',
+                [
+                    'position' => 'bottom',
+                    'priority' => 1000,
+                ]
+            );
+        }
     }
 
     public function renderWidget($hookName = null, array $configuration = [])
@@ -377,14 +446,25 @@ class Phautosignin extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        return array();
+        //return array();
+        return [
+            'hookName' => $hookName,
+            'configuration' => $configuration
+        ];
     }
 
     public function hookDisplayBeforeBodyClosingTag()
     {
+        if (Context::getContext()->cookie->isLogged()) {
+//        if ($this->context->customer->isLogged()) {
+            return;
+        }
+
         $isGoogleAutoSignInAvailable = false;
         $activatedPages = explode(';', Configuration::get('PHAUTOSIGNIN_PAGE_LIST'));
         $controllers = array_values($activatedPages);
+        $position = (int) Configuration::get('PHAUTOSIGNIN_POSITION');
+        $cancelOnTapOutside = (Configuration::get('PHAUTOSIGNIN_CANCELONTAPOUTSIDE')) ? 'true' : 'false';
 
         // Enable the auto signin on the selected pages
         if (in_array(Tools::getValue("controller"), $controllers)
@@ -406,8 +486,11 @@ class Phautosignin extends Module implements WidgetInterface
             array(
                 'phSocialLoginUrl' => $this->context->link->getModuleLink($this->name, 'googleautosignin'),
                 'isGoogleAutoSignInAvailable' => $isGoogleAutoSignInAvailable,
-                'phCustomerIsLogged' => (int)$this->context->customer->isLogged(),
+                'phCustomerIsLogged' => (int)Context::getContext()->cookie->isLogged(),
+//                'phCustomerIsLogged' => (int)$this->context->customer->isLogged(),
                 'clientId' => $clientId,
+                'position' => $position,
+                'cancelOnTapOutside' => $cancelOnTapOutside,
                 'phAutoSigninSilently' => (Configuration::get('PHAUTOSIGNIN_AUTOSIGNINSILENTLY')) ? 'true' : 'false'
             )
         );
