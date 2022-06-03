@@ -1,23 +1,33 @@
-# Google auto sign in
-Base 1.7 module for PH advanced checkout module 1.7 only
+# Overview
 
-Sign up new users with just one tap, without interrupting them with a sign-up screen. 
-Users get a secure, token-based, passwordless account on your site, protected by their Google Account.
-Sign in users automatically when they return to your site on any device or browser, even after their session expires.
-Benefits for Merchants:
+Removes user sign in and account creation friction with Google  **One Tap sign-up**  | **Sign-in. **
 
+Visitors can sign-in or create account with simple click.
 
-Features:
+# Benefits
 
+Visitors can sign in or create new account with **Google One Tap**.
 
-Installation:
+Encourages them to complete cart process knowing they can **skip sign in or account creation step at checkout**.
 
-Recommended:  
+**Seeds** abandoned cart with Gmail email addresses.
 
+**What your customers will like**
 
-Other (for advanced users)
-Upload unzipped files via ftp or hosting control panel to your PrestaShop modules folder.
+Assurance that their credentials are not stored on other platforms. No need to remember login/passwords when they return to your shop.
 
-1.	Find module in PrestaShop module manager
-2.	Install module
-3.	Select configure
+**Installation**
+
+**Install normally** from your PrestaShop module manager screen.
+
+**Add your Google Client ID key and Client Secret key** (see module tab documentation for more details)
+
+**Feature Rich Module Configuration:**
+
+**Auto sign in silently**  (logs visitor in if they have already created an account)
+
+**Reload page after login**  (recommended as this shows correct log status)
+
+**Cancel on tap outside**  (cancel One-tap if visitor clicks/touches outside of prompt)
+
+**Position Using PH Hook Anywhere Widget**  (place where you want the One-tap/sign-up widget to display for mobile and desktop
